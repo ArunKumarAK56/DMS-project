@@ -3,7 +3,7 @@ class HttpUrl {
   static const String baseUrl = 'https://dmsapi.catchuacademy.com/';
   static const String generateOtp = '${baseUrl}api/generate-otp';
   static const String verifyOtp = '${baseUrl}api/verify-otp';
-  static const String loginUrl = '${baseUrl}users/signin';
+  static const String loginUrl = '${baseUrl}api/users/signin';
   static const String forgotPassword = '${baseUrl}api/users/forgotpassword';
   static const String getVehicle = '${baseUrl}api/mobile/invoice/';
   static const String getVehicleDetails = '${baseUrl}api/mobile/vehicle/';
