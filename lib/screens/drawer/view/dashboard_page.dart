@@ -1,8 +1,8 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 import '../../settings/settings_screen.dart';
+import '../../woroOrder/work_order.dart';
 import '../widgets/app_bar.dart';
 
 /////////////////////////////////////////////////////////////
@@ -47,23 +47,23 @@ class _DashBoardPageState extends State<DashBoardPage> {
             );
           },
           qrOnPress: () async {
-            var res = await Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const SimpleBarcodeScannerPage(),
-                ));
-            if (res is String) {
-              if (res == "-1") {
-                Navigator.push(context, MaterialPageRoute(builder: (context) {
-                  return DashBoardPage();
-                }));
-              } else {
-                result = res;
-                Navigator.push(context, MaterialPageRoute(builder: (context) {
-                  return WorkOrdersPage(result: result);
-                }));
-              }
-            }
+            // var res = await Navigator.push(
+            //     context,
+            //     MaterialPageRoute(
+            //       builder: (context) => const SimpleBarcodeScannerPage(),
+            //     ));
+            // if (res is String) {
+            //   if (res == "-1") {
+            //     Navigator.push(context, MaterialPageRoute(builder: (context) {
+            //       return DashBoardPage();
+            //     }));
+            //   } else {
+            //     result = res;
+            //     Navigator.push(context, MaterialPageRoute(builder: (context) {
+            //       return WorkOrdersPage(result: result);
+            //     }));
+            //   }
+            // }
           },
           notificationOnPress: () {},
         ),

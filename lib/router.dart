@@ -113,7 +113,7 @@ class PageBuilder {
     return BlocProvider(
         create: (BuildContext context) =>
         DrawerBloc()..add(DrawerInitialEvent(context: context)),
-        child: DmsDrawer());
+        child: DashBoardPage());
   }
 
 

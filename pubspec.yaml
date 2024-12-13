@@ -71,7 +71,7 @@ dependencies:
   go_router: ^14.6.2
   package_info_plus: ^8.1.2
   mailer: ^6.3.0
-  simple_barcode_scanner: ^0.0.8
+#  simple_barcode_scanner: ^0.0.8
   flutter_localization: ^0.2.3
   build_runner: ^2.4.13
   json_serializable: ^6.9.0

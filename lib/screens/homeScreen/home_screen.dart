@@ -54,7 +54,7 @@ class _DmsDrawerState extends State<HomeScreen> {
     BlocProvider(
         create: (BuildContext context) =>
             DrawerBloc()..add(DrawerInitialEvent(context: context)),
-        child: DmsDrawer()),
+        child: DashBoardPage()),
 
     BlocProvider(
         create: (BuildContext context) => ProfileDetailsBloc()

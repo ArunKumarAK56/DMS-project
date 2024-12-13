@@ -2,6 +2,9 @@ import 'package:dms_dealers/screens/drawer/widgets/app_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../settings/settings_screen.dart';
+import '../woroOrder/work_order.dart';
+
 
 class DashBoardPage extends StatefulWidget {
   const DashBoardPage({super.key});
@@ -40,23 +43,23 @@ class _DashBoardPageState extends State<DashBoardPage> {
             );
           },
           qrOnPress: () async {
-            var res = await Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const SimpleBarcodeScannerPage(),
-                ));
-            if (res is String) {
-              if (res == "-1") {
-                Navigator.push(context, MaterialPageRoute(builder: (context) {
-                  return DashBoardPage();
-                }));
-              } else {
-                result = res;
-                Navigator.push(context, MaterialPageRoute(builder: (context) {
-                  return WorkOrdersPage(result: result);
-                }));
-              }
-            }
+            // var res = await Navigator.push(
+            //     context,
+            //     MaterialPageRoute(
+            //       builder: (context) => const SimpleBarcodeScannerPage(),
+            //     ));
+            // if (res is String) {
+            //   if (res == "-1") {
+            //     Navigator.push(context, MaterialPageRoute(builder: (context) {
+            //       return DashBoardPage();
+            //     }));
+            //   } else {
+            //     result = res;
+            //     Navigator.push(context, MaterialPageRoute(builder: (context) {
+            //       return WorkOrdersPage(result: result);
+            //     }));
+            //   }
+            // }
           },
           notificationOnPress: () {},
         ),
@@ -64,12 +67,8 @@ class _DashBoardPageState extends State<DashBoardPage> {
       // bottomNavigationBar: const BottomNavigationWidget(),
       body: Column(
         children: [
-          /* ------------------  ------------------ */
-          // HomeTop(), /* --- Added in Appbar--- */
-          /* ------------------  ------------------ */
           dashboardHeader(context),
-          /* ------------------  ------------------ */
-          const DashBoardBottomWidget(),
+
         ],
       ),
     );
@@ -84,7 +83,7 @@ class _DashBoardPageState extends State<DashBoardPage> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
             child: Text(
-              context.local.wo_dashboard,
+             "Dash board",
               style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             ),
           ),
@@ -125,7 +124,7 @@ class _DashBoardPageState extends State<DashBoardPage> {
                             icon: const Icon(Icons.close),
                           ),
                           Text(
-                            AppLocalizations.of(context)!.editDashboard,
+                            "Edit",
                             style: const TextStyle(
                                 fontSize: 18, fontWeight: FontWeight.bold),
                           ),
@@ -136,7 +135,7 @@ class _DashBoardPageState extends State<DashBoardPage> {
                         height: 20,
                       ),
                       Text(
-                        context.local.wo_populate,
+                        "Populat",
                         style: TextStyle(
                           color: Colors.grey.shade600,
                           fontSize: 16,
@@ -146,7 +145,7 @@ class _DashBoardPageState extends State<DashBoardPage> {
                         thickness: 2,
                       ),
                       ListTile(
-                        title: Text(context.local.all_wo),
+                        title: Text("All"),
                       ),
                       const Padding(
                         padding: EdgeInsets.only(left: 8.0, right: 8),
@@ -155,14 +154,14 @@ class _DashBoardPageState extends State<DashBoardPage> {
                         ),
                       ),
                       ListTile(
-                        title: Text(context.local.custom),
+                        title: Text("custom"),
                       ),
                       const Divider(
                         thickness: 2,
                       ),
                       ListTile(
                         title: Text(
-                          context.local.include_work,
+                          "include work",
                           style: const TextStyle(
                               fontSize: 18, fontWeight: FontWeight.bold),
                         ),
@@ -171,7 +170,7 @@ class _DashBoardPageState extends State<DashBoardPage> {
                         thickness: 2,
                       ),
                       ListTile(
-                          title: Text(context.local.assigned_to_me),
+                          title: Text("Assign to me"),
                           trailing: CupertinoSwitch(
                             // This bool value toggles the switch.
                             value: true,
@@ -187,7 +186,7 @@ class _DashBoardPageState extends State<DashBoardPage> {
                       ),
                       ListTile(
                         title: Text(
-                          context.local.assigned_to_my_team,
+                          "Assign by team",
                         ),
                         trailing: Row(
                           mainAxisSize: MainAxisSize.min,
@@ -212,7 +211,7 @@ class _DashBoardPageState extends State<DashBoardPage> {
                         ),
                       ),
                       ListTile(
-                          title: Text(context.local.unassigned),
+                          title: Text("UnAssign"),
                           trailing: CupertinoSwitch(
                             // This bool value toggles the switch.
                             value: false,

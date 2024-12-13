@@ -1,29 +1,16 @@
+import 'package:dms_dealers/base/base_state.dart';
 import 'package:dms_dealers/utils/extensions/build_context/local.dart';
 import 'package:dms_dealers/utils/extensions/widget_extension.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:oriens_eam/core/utils/extensions/build_context/local.dart';
-import 'package:oriens_eam/core/utils/extensions/widget_extension.dart';
-import 'package:oriens_eam/features/1_dashboard/3_dashboard_presentation/widgets/app_bar.dart';
-import 'package:oriens_eam/features/2_workorder/presentation/bloc/local/local_workorder_bloc.dart';
-import 'package:oriens_eam/features/3_workorder_details/3_wod_presentation/view/wo_details_page.dart';
-import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
-
-import '../../../../core/dependency_injection/di_container.dart';
-import '../../../3_workorder_details/1_wod_domain/workorder_update_api.dart';
-import '../../domain/entities/workorder.dart';
-import '../bloc/workorder_bloc.dart';
 import '../drawer/widgets/app_bar.dart';
+import '../workDetailScreen/work_detail_page.dart';
+import 'bloc/workorder_bloc.dart';
 import 'model/workorder.dart';
 
-/////////////////////////////////////////////////////////////
-/// WORK ORDER PAGE
-/////////////////////////////////////////////////////////////
 
-/// This page is from BNB "work order".
-/// MAIN WORK ORDERS LIST PAGE
 class WorkOrdersPage extends StatefulWidget {
   WorkOrdersPage({super.key, this.result});
 
@@ -156,7 +143,7 @@ class _WorkOrdersPageState extends State<WorkOrdersPage> {
             child: Column(
               children: [
                 OAppBar(
-                  title: context.local.work_orders,
+                  title: "work order",
                   titleCenter: false,
                   leadingIcon: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -178,19 +165,19 @@ class _WorkOrdersPageState extends State<WorkOrdersPage> {
                     context.go('/workorder/calender');
                   },
                   qrOnPress: () async {
-                    var res = await Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                          const SimpleBarcodeScannerPage(),
-                        ));
-                    if (res is String) {
-                      print("resuuuult${res}");
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) {
-                            return WorkOrdersPage(result: res);
-                          }));
-                    }
+                    // var res = await Navigator.push(
+                    //     context,
+                    //     MaterialPageRoute(
+                    //       builder: (context) =>
+                    //       const SimpleBarcodeScannerPage(),
+                    //     ));
+                    // if (res is String) {
+                    //   print("resuuuult${res}");
+                    //   Navigator.push(context,
+                    //       MaterialPageRoute(builder: (context) {
+                    //         return WorkOrdersPage(result: res);
+                    //       }));
+                    // }
 
                   },
                   notificationOnPress: () {},
@@ -247,7 +234,7 @@ class _WorkOrdersPageState extends State<WorkOrdersPage> {
                         isDense: true,
                         // Added this
                         contentPadding: const EdgeInsets.all(8),
-                        hintText: context.local.search_by,
+                        hintText: "search",
                         hintStyle: TextStyle(color: Colors.grey.shade500),
                         suffixIcon: _searchController.text.isNotEmpty // Check controller text
                             ? IconButton(
@@ -308,316 +295,21 @@ class _WorkOrdersPageState extends State<WorkOrdersPage> {
       ),
 
       /////////////////////////// BODY  \\\\\\\\\\\\\\\\\\\\\\\\\\
-      body:   return Padding(
-    padding: const EdgeInsets.all(6.0),
-    child: Column(
-    children: [
-    Expanded(
-    child: ListView.builder(
-    itemCount: _filteredWorkOrder.length,
-    // The list items
-    itemBuilder: (context, index) {
-    String? priority;
-    if (_filteredWorkOrder[index].priorityName!.isNotEmpty) {
-    priority = _filteredWorkOrder[index]
-        .priorityName!
-        .startsWith("N")
-    ? _filteredWorkOrder[index]
-        .priorityName
-        ?.substring(0, 7)
-        : _filteredWorkOrder[index]
-        .priorityName
-        ?.substring(0, 10);
-    } else {
-    priority = "";
-    }
-
-
-    selectedItem[index] =
-    _filteredWorkOrder[index].isFavouriteWO ?? false;
-
-    print("${ _filteredWorkOrder[index].isFavouriteWO}");
-
-    isSelectedData =  selectedItem[index]!;
-
-    return GestureDetector(
-    onTap: () {
-    Navigator.push(
-    context,
-    MaterialPageRoute(
-    builder: (context) => WorkorderDetailsPage(
-    workOrder: state.workOrders![index]),
-    ),
-    );
-    },
-    child: Card(
-    margin: const EdgeInsets.all(10),
-    elevation: 8,
-    shape: RoundedRectangleBorder(
-    borderRadius: BorderRadius.circular(16)),
-    child: Padding(
-    padding: const EdgeInsets.all(10),
-    child: Column(
-    mainAxisSize: MainAxisSize.min,
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-    /* ------------------ Status ------------------ */
-    Container(
-    decoration: BoxDecoration(
-    gradient: LinearGradient(
-    colors: [
-    Colors.green[400]!,
-    Colors.green[600]!
-    ],
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-    ),
-    borderRadius: BorderRadius.circular(8),
-    ),
-    padding: const EdgeInsets.symmetric(
-    horizontal: 8, vertical: 4),
-    child: Text(
-    _filteredWorkOrder[index].status ?? "",
-    style: const TextStyle(
-    color: Colors.white,
-    fontWeight: FontWeight.bold,
-    ),
-    ),
-    ),
-    const SizedBox(height: 12),
-    Row(
-    mainAxisAlignment:
-    MainAxisAlignment.spaceBetween,
-    children: [
-    /* ------------------ Work Tile ------------------ */
-    SizedBox(
-    width:
-    MediaQuery.sizeOf(context).width * 0.5,
-    child: Text(
-    _filteredWorkOrder[index].workOrderName ??
-    "",
-    overflow: TextOverflow.ellipsis,
-    maxLines: 2,
-    style: const TextStyle(
-    fontSize: 18,
-    fontFamily: 'Aeon',
-    fontWeight: FontWeight.bold,
-    ),
-    ),
-    ),
-    /* ------------------ WO No. Priority ------------------ */
-    Column(
-    crossAxisAlignment: CrossAxisAlignment.end,
-    children: [
-    Text(
-    "#${_filteredWorkOrder[index].code?.trim()}",
-    style: TextStyle(
-    fontSize: 14,
-    fontFamily: 'Aeon',
-    color: Colors.grey[600],
-    ),
-    ),
-    Text(
-    priority == "" ? "" : priority!,
-    style: TextStyle(
-    fontSize: 14,
-    fontFamily: 'Aeon',
-    color: priority == "Emergency "
-    ? Colors.red[600]
-        : Colors.blue[600]),
-    ),
-    ],
-    ),
-    ],
-    ),
-    Divider(color: Colors.grey[300]),
-    const SizedBox(height: 8),
-    Row(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-    Icon(Icons.build, color: Colors.grey[600]),
-    const SizedBox(width: 8),
-    SizedBox(
-    width:
-    MediaQuery.sizeOf(context).width * 0.75,
-    child: Text(
-    _filteredWorkOrder[index].workTypeName ==
-    null
-    ? ""
-        : _filteredWorkOrder[index]
-        .workTypeName ??
-    "",
-    maxLines: 2,
-    overflow: TextOverflow.ellipsis,
-    softWrap: false,
-    style: const TextStyle(
-    fontSize: 16,
-    fontFamily: 'Aeon',
-    ),
-    ),
-    ),
-    ],
-    ),
-    const SizedBox(height: 8),
-    /* ------------------ Other Details - First Line ------------------ */
-    Row(
-    children: [
-    Icon(Icons.location_on,
-    color: Colors.grey[600]),
-    const SizedBox(width: 8),
-    Text(
-    "${_filteredWorkOrder[index].locationCode ?? ""} - ${_filteredWorkOrder[index].locationName ?? ""}",
-    style: const TextStyle(
-    fontSize: 16,
-    fontFamily: 'Aeon',
-    ),
-    ),
-    ],
-    ),
-    const SizedBox(height: 8),
-    /* ------------------ Other Details - Second Line ------------------ */
-
-    Row(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-    Icon(Icons.business_center,
-    color: Colors.grey[600]),
-    const SizedBox(width: 8),
-    SizedBox(
-    width:
-    MediaQuery.sizeOf(context).width * 0.75,
-    child: Text(
-    "${_filteredWorkOrder[index].assetCode ?? ""} - ${_filteredWorkOrder[index].assetName ?? ""}",
-    maxLines: 2,
-    overflow: TextOverflow.ellipsis,
-    softWrap: false,
-    style: const TextStyle(
-    fontSize: 16,
-    fontFamily: 'Aeon',
-    ),
-    ),
-    ),
-    ],
-    ),
-    const SizedBox(height: 8),
-    /* ------------------ Other Details - Third Line ------------------ */
-    Row(
-    children: [
-    Icon(Icons.person, color: Colors.grey[600]),
-    const SizedBox(width: 8),
-    const Text(
-    'Me',
-    style: TextStyle(
-    fontSize: 16,
-    fontFamily: 'Aeon',
-    ),
-    ),
-    ],
-    ),
-    const SizedBox(height: 12),
-    Align(
-    alignment: Alignment.centerRight,
-    child: Row(
-    mainAxisSize: MainAxisSize.min,
-    children: [
-    ElevatedButton(
-    onPressed: () async {
-    setState(() {
-    // Toggle the selected item state
-    selectedItem[index] = !isSelectedData!;
-
-    isSelectedData = !isSelectedData!;
-    _foundWorkOrder[index].isFavouriteWO = !_foundWorkOrder[index].isFavouriteWO!;
-    });
-
-    // Determine if any item is selected
-    isSelectItem = selectedItem.containsValue(true);
-
-
-    print("isSelectItem${_foundWorkOrder[index].isFavouriteWO!}");
-
-    try {
-    // Call the API to save the work order status update
-    await WorkOrderStatusUpdateApi.saveWorkOrder(
-    _foundWorkOrder[index].workOrderId!,
-    _foundWorkOrder[index].isFavouriteWO!,  // Pass the toggled state
-    _foundWorkOrder[index].assetId!,
-    );
-
-    // After successful API call, update the state to reflect the change
-    } catch (error) {
-    // Handle API errors here
-    print('Error saving work order status: $error');
-    }
-    },
-    style: ElevatedButton.styleFrom(
-    backgroundColor: Colors.white,
-    padding: const EdgeInsets.all(
-    12), // Background color
-    ),
-    child: Icon(
-    size: isSelectedData! ? 21 : 18,
-    isSelectedData!
-    ? Icons.bookmark_added
-        : Icons.bookmark_add,
-    color: isSelectedData!
-    ? Colors.green
-        : Colors.grey.shade400,
-    fill: 1.0,
-    ),
-    ),
-    const SizedBox(width: 8),
-    ElevatedButton(
-    onPressed: () {
-    Navigator.push(
-    context,
-    MaterialPageRoute(
-    builder: (context) =>
-    WorkorderDetailsPage(
-    workOrder: state
-        .workOrders![index]),
-    ),
-    );
-    },
-    style: ElevatedButton.styleFrom(
-    shape: const CircleBorder(),
-    backgroundColor: Colors.white,
-    padding: const EdgeInsets.all(
-    12), // Background color
-    ),
-    child: const Icon(Icons.more_vert,
-    color: Colors.black),
-    ),
-    ],
-    ),
-    ),
-    ],
-    ),
-    ),
-    ),
-    );
-    },
-    ),
-    ),
-    ],
-    ),
-    );
-
-      BlocBuilder<WorkorderBloc, WorkorderState>(
+      body: BlocBuilder<WorkorderBloc, BaseState>(
         builder: (context, state) {
-          if (state is WorkorderLoading) {
+          if (state is InitialState) {
             return const Center(child: CupertinoActivityIndicator());
           }
 
-          if (state is WorkorderError) {
+          if (state is FailureState) {
             return const Center(child: Icon(Icons.refresh));
           }
 
-          if (state is WorkorderLoaded) {
-            _foundWorkOrder = state.workOrders!;
-            if (_filteredWorkOrder.isEmpty) {
-              _filteredWorkOrder = state.workOrders!;
-            }
+          if (state is SuccessState) {
+            // _foundWorkOrder = state.workOrders!;
+            // if (_filteredWorkOrder.isEmpty) {
+            //   _filteredWorkOrder = state.workOrders!;
+            // }
             return Padding(
               padding: const EdgeInsets.all(6.0),
               child: Column(
@@ -655,10 +347,10 @@ class _WorkOrdersPageState extends State<WorkOrdersPage> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => WorkorderDetailsPage(
-                                    workOrder: state.workOrders![index]),
+                                builder: (context) => WorkDetailPage(
+                                    // workOrder: state.workOrders![index]),
                               ),
-                            );
+                            ));
                           },
                           child: Card(
                             margin: const EdgeInsets.all(10),
@@ -846,19 +538,19 @@ class _WorkOrdersPageState extends State<WorkOrdersPage> {
 
                                             print("isSelectItem${_foundWorkOrder[index].isFavouriteWO!}");
 
-                                            try {
-                                              // Call the API to save the work order status update
-                                              await WorkOrderStatusUpdateApi.saveWorkOrder(
-                                                _foundWorkOrder[index].workOrderId!,
-                                                _foundWorkOrder[index].isFavouriteWO!,  // Pass the toggled state
-                                                _foundWorkOrder[index].assetId!,
-                                              );
-
-                                              // After successful API call, update the state to reflect the change
-                                            } catch (error) {
-                                              // Handle API errors here
-                                              print('Error saving work order status: $error');
-                                            }
+                                            // try {
+                                            //   // Call the API to save the work order status update
+                                            //   await WorkOrderStatusUpdateApi.saveWorkOrder(
+                                            //     _foundWorkOrder[index].workOrderId!,
+                                            //     _foundWorkOrder[index].isFavouriteWO!,  // Pass the toggled state
+                                            //     _foundWorkOrder[index].assetId!,
+                                            //   );
+                                            //
+                                            //   // After successful API call, update the state to reflect the change
+                                            // } catch (error) {
+                                            //   // Handle API errors here
+                                            //   print('Error saving work order status: $error');
+                                            // }
                                           },
                                           style: ElevatedButton.styleFrom(
                                             backgroundColor: Colors.white,
@@ -879,15 +571,22 @@ class _WorkOrdersPageState extends State<WorkOrdersPage> {
                                         const SizedBox(width: 8),
                                         ElevatedButton(
                                           onPressed: () {
+                                            // Navigator.push(
+                                            //   context,
+                                            //   MaterialPageRoute(
+                                            //     builder: (context) =>
+                                            //         WorkorderDetailsPage(
+                                            //             workOrder: state
+                                            //                 .workOrders![index]),
+                                            //   ),
+                                            // );
                                             Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) =>
-                                                    WorkorderDetailsPage(
-                                                        workOrder: state
-                                                            .workOrders![index]),
-                                              ),
-                                            );
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) => WorkDetailPage(
+                                                    // workOrder: state.workOrders![index]),
+                                                  ),
+                                                ));
                                           },
                                           style: ElevatedButton.styleFrom(
                                             shape: const CircleBorder(),
