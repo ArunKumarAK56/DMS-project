@@ -29,45 +29,47 @@ class OAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppBar(
-      automaticallyImplyLeading: false,
-      leading: leadingIcon,
-      iconTheme: const IconThemeData(
-        color: Colors.blue, //change your color here
-      ),
-      centerTitle: titleCenter,
-      backgroundColor: Colors.white,
-      bottomOpacity: 0.0,
-      title: Text(
-        title ?? "",
-        style: const TextStyle(color: Colors.black),
-      ),
-      elevation: elevation,
-      // backgroundColor: Colors.white,
-      actions: [
-        IconButton(
-          icon: Icon(
-            qrIcon,
-            color: Colors.black,
-          ), // QRIcon
-          onPressed: qrOnPress,
+    return SafeArea(
+      child: AppBar(
+        automaticallyImplyLeading: false,
+        leading: leadingIcon,
+        iconTheme: const IconThemeData(
+          color: Colors.blue, //change your color here
         ),
-        IconButton(
-          icon: Icon(
-            notificationIcon,
-            color: Colors.black,
-          ),
-          onPressed: notificationOnPress,
-        ), // NotificationIcon
-        IconButton(
-          icon: Icon(
-            icon,
-            color: Colors.black,
-          ),
-          // tooltip: 'Settings',
-          onPressed: onPress,
+        centerTitle: titleCenter,
+        backgroundColor: Colors.white,
+        bottomOpacity: 0.0,
+        title: Text(
+          title ?? "",
+          style: const TextStyle(color: Colors.black),
         ),
-      ],
+        elevation: elevation,
+        // backgroundColor: Colors.white,
+        actions: [
+          IconButton(
+            icon: Icon(
+              qrIcon,
+              color: Colors.black,
+            ), // QRIcon
+            onPressed: qrOnPress,
+          ),
+          IconButton(
+            icon: Icon(
+              notificationIcon,
+              color: Colors.black,
+            ),
+            onPressed: notificationOnPress,
+          ), // NotificationIcon
+          IconButton(
+            icon: Icon(
+              icon,
+              color: Colors.black,
+            ),
+            // tooltip: 'Settings',
+            onPressed: onPress,
+          ),
+        ],
+      ),
     );
   }
 }

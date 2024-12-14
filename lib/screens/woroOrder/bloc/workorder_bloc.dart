@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:dms_dealers/base/base_state.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -8,7 +9,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 part 'workorder_event.dart';
 
 class WorkorderBloc extends Bloc<WorkorderEvent, BaseState> {
-  WorkorderBloc(super.initialState);
+  WorkorderBloc() : super(InitialState());
 //   final GetWorkOrderUsecase _getWorkOrderUsecase;
 //
 //   WorkorderBloc(this._getWorkOrderUsecase) : super(const WorkorderLoading()) {

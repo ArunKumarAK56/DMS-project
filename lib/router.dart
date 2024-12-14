@@ -1,3 +1,4 @@
+
 import 'package:dms_dealers/screens/drawer/drawer.dart';
 import 'package:dms_dealers/screens/drawer/drawer_bloc.dart';
 import 'package:dms_dealers/screens/drawer/drawer_event.dart';
@@ -20,9 +21,9 @@ import 'package:dms_dealers/screens/url_page/urlpage_event.dart';
 import 'package:dms_dealers/screens/url_page/urlpage_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'authenticatiom/bloc/authentication_bloc.dart';
 import 'authenticatiom/bloc/authentication_state.dart';
-
 import 'screens/profile/profile_details_bloc.dart';
 
 class AppRoutes {
@@ -30,6 +31,7 @@ class AppRoutes {
   static const String loginScreen = 'login_screen';
   static const String otpScreen = 'otp_screen';
   static const String drawerScreen = 'drawer_screen';
+  static const String homeScreen = 'home_screen';
   static const String profile = 'profile_screen';
   static const String profile_details = 'profile_details_screen';
   static const String url = 'url_screen';
@@ -138,6 +140,9 @@ class PageBuilder {
         child: const UrlPage());
   }
 
+
+
+
 }
 
 
@@ -159,7 +164,7 @@ Widget addAuthBloc(BuildContext context, Widget widget) {
         while (Navigator.canPop(context)) {
           Navigator.pop(context);
         }
-        await Navigator.pushReplacementNamed(context, AppRoutes.drawerScreen);
+        await Navigator.pushReplacementNamed(context, AppRoutes.homeScreen);
       }
     },
     child: BlocBuilder(

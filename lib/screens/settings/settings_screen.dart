@@ -1,5 +1,9 @@
 import 'package:dms_dealers/screens/profile/profile_details_screen.dart';
+import 'package:dms_dealers/screens/profile_view/edit_profile_screen.dart';
+import 'package:dms_dealers/screens/profile_view/profile_view_bloc.dart';
+import 'package:dms_dealers/screens/profile_view/profile_view_event.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mailer/mailer.dart';
 import 'package:mailer/smtp_server.dart';
@@ -35,7 +39,9 @@ class _SettingsPageState extends State<SettingsPage> {
             IconButton(
               icon: const Icon(Icons.arrow_back_ios_new, color: Colors.blue),
               onPressed: () {
-                context.pop();
+                if(mounted){
+                  Navigator.pop(context);
+                }
               },
             ),
             const Text(
@@ -54,10 +60,16 @@ class _SettingsPageState extends State<SettingsPage> {
         children: [
           GestureDetector(
             onTap: () {
+
+              // BlocProvider(
+              //     create: (BuildContext context) =>
+              //     ProfileViewBloc()..add(ProfileViewApiEvent()),
+              //     child:  ProfileDetailsScreen());
+
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (BuildContext context) => const ProfileDetailsScreen(),
+                  builder: (BuildContext context) => const EditProfileScreen(),
                 ),
               );
             },

@@ -20,4 +20,12 @@ class WorkOrderStatusUpDateEvent extends WorkorderEvent {
   const WorkOrderStatusUpDateEvent({required this.workOrderId, required this.status});
 }
 
+class WorkOrderEventInitialEvent extends WorkorderEvent {
+  BuildContext? context;
+  dynamic arguments;
+
+  WorkOrderEventInitialEvent({this.context});
+
+}
+
 class WorkOrderFilteredEvent extends WorkorderEvent {}

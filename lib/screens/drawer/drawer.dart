@@ -2,6 +2,7 @@ import 'package:dms_dealers/screens/drawer/widgets/app_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../homeBottom/dash_board_bottom_widget.dart';
 import '../settings/settings_screen.dart';
 import '../woroOrder/work_order.dart';
 
@@ -27,48 +28,51 @@ class _DashBoardPageState extends State<DashBoardPage> {
     return Scaffold(
       backgroundColor: Colors.grey.shade200,
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(60),
-        child: OAppBar(
-          titleCenter: false,
-          icon: Icons.settings_outlined,
-          qrIcon: Icons.qr_code_scanner_outlined,
-          notificationIcon: Icons.notifications_none_sharp,
-          title: 'Iron Man',
-          onPress: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (BuildContext context) => const SettingsPage(),
-              ),
-            );
-          },
-          qrOnPress: () async {
-            // var res = await Navigator.push(
-            //     context,
-            //     MaterialPageRoute(
-            //       builder: (context) => const SimpleBarcodeScannerPage(),
-            //     ));
-            // if (res is String) {
-            //   if (res == "-1") {
-            //     Navigator.push(context, MaterialPageRoute(builder: (context) {
-            //       return DashBoardPage();
-            //     }));
-            //   } else {
-            //     result = res;
-            //     Navigator.push(context, MaterialPageRoute(builder: (context) {
-            //       return WorkOrdersPage(result: result);
-            //     }));
-            //   }
-            // }
-          },
-          notificationOnPress: () {},
+        preferredSize: const Size.fromHeight(80),
+        child: Padding(
+          padding: EdgeInsets.only(top: 25),
+          child: OAppBar(
+            titleCenter: false,
+            icon: Icons.settings_outlined,
+            qrIcon: Icons.qr_code_scanner_outlined,
+            notificationIcon: Icons.notifications_none_sharp,
+            title: 'Iron Man',
+            onPress: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (BuildContext context) => const SettingsPage(),
+                ),
+              );
+            },
+            qrOnPress: () async {
+              // var res = await Navigator.push(
+              //     context,
+              //     MaterialPageRoute(
+              //       builder: (context) => const SimpleBarcodeScannerPage(),
+              //     ));
+              // if (res is String) {
+              //   if (res == "-1") {
+              //     Navigator.push(context, MaterialPageRoute(builder: (context) {
+              //       return DashBoardPage();
+              //     }));
+              //   } else {
+              //     result = res;
+              //     Navigator.push(context, MaterialPageRoute(builder: (context) {
+              //       return WorkOrdersPage(result: result);
+              //     }));
+              //   }
+              // }
+            },
+            notificationOnPress: () {},
+          ),
         ),
       ),
       // bottomNavigationBar: const BottomNavigationWidget(),
       body: Column(
         children: [
           dashboardHeader(context),
-
+          DashBoardBottomWidget()
         ],
       ),
     );

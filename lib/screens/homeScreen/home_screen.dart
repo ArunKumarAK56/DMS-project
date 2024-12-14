@@ -1,8 +1,10 @@
 import 'package:dms_dealers/router.dart';
 import 'package:dms_dealers/screens/drawer/drawer_bloc.dart';
 import 'package:dms_dealers/screens/homeScreen/home_bloc.dart';
+import 'package:dms_dealers/screens/morePage/more_page_screen.dart';
 import 'package:dms_dealers/screens/profile/model/profile_details.dart';
 import 'package:dms_dealers/screens/profile/profile_details_screen.dart';
+import 'package:dms_dealers/screens/woroOrder/bloc/workorder_bloc.dart';
 import 'package:dms_dealers/utils/color_resources.dart';
 import 'package:dms_dealers/utils/contants.dart';
 import 'package:dms_dealers/utils/image_resources.dart';
@@ -10,17 +12,20 @@ import 'package:dms_dealers/widgets/main_menu_card.dart';
 import 'package:dms_dealers/widgets/nav_menu_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../base/base_state.dart';
-import '../../utils/singleton.dart';
-
 import '../drawer/drawer.dart';
 import '../drawer/drawer_event.dart';
 import '../profile/profile_details_bloc.dart';
 import '../profile/profile_details_event.dart';
+import '../serviceRequestPage/serive_request_bloc.dart';
+import '../serviceRequestPage/service_request_event.dart';
+import '../serviceRequestPage/service_request_page.dart';
 import '../url_page/urlpage_bloc.dart';
 import '../url_page/urlpage_event.dart';
 import '../url_page/urlpage_screen.dart';
+import '../woroOrder/work_order.dart';
 import 'home_event.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -57,14 +62,19 @@ class _DmsDrawerState extends State<HomeScreen> {
         child: DashBoardPage()),
 
     BlocProvider(
-        create: (BuildContext context) => ProfileDetailsBloc()
-          ..add(ProfileDetailsEventInitialEvent(context: context)),
-        child: const ProfileDetailsScreen()),
+        create: (BuildContext context) =>
+        WorkorderBloc()..add(WorkOrderEventInitialEvent(context: context)),
+        child:  WorkOrdersPage()),
+
+    BlocProvider(
+        create: (BuildContext context) =>
+        ServiceRequestBloc()..add(ServiceRequestInitialEvent(context: context)),
+        child: const ServiceRequestPage())   ,
 
     BlocProvider(
         create: (BuildContext context) =>
         UrlpageBloc()..add(UrlpageInitialEvent(context: context)),
-        child: const UrlPage())
+        child: const MorePage())
   ];
 
   void _onTabTapped(int index) {
@@ -106,6 +116,7 @@ class _DmsDrawerState extends State<HomeScreen> {
   }
 
 
+
   @override
   Widget build(BuildContext context) {
     return PopScope(
@@ -119,49 +130,37 @@ class _DmsDrawerState extends State<HomeScreen> {
       child:  BlocBuilder(
           bloc: bloc,
           builder: (BuildContext context, BaseState state) {
-            if (state is ScreenLoadState) {
+            // if (state is ScreenLoadState) {
               return Scaffold(
-                  bottomNavigationBar: BottomNavigationBar(
-                    currentIndex: _currentIndex,
-                    onTap: _onTabTapped,
-                    items: [
-                      BottomNavigationBarItem(
-                        icon: Icon(Icons.home),
-                        label: 'Home',
-                      ),
-                      BottomNavigationBarItem(
-                        icon: Icon(Icons.person),
-                        label: 'Profile',
-                      ),
-                      BottomNavigationBarItem(
-                        icon: Icon(Icons.settings),
-                        label: 'Settings',
-                      ),
-                    ],
+                  bottomNavigationBar:ScaffoldWithNavigationBar(
+                    body:_screens[_currentIndex],
+                    selectedIndex:_currentIndex,
+                    onDestinationSelected: _onTabTapped,
                   ),
-                  body: _screens[_currentIndex]);
-            }
 
-            return Scaffold(
-                bottomNavigationBar: BottomNavigationBar(
-                  currentIndex: _currentIndex,
-                  onTap: _onTabTapped,
-                  items: [
-                    BottomNavigationBarItem(
-                      icon: Icon(Icons.home),
-                      label: 'Home',
-                    ),
-                    BottomNavigationBarItem(
-                      icon: Icon(Icons.person),
-                      label: 'Profile',
-                    ),
-                    BottomNavigationBarItem(
-                      icon: Icon(Icons.settings),
-                      label: 'Settings',
-                    ),
-                  ],
-                ),
-                body: _screens[_currentIndex]);
+                  body: _screens[_currentIndex]);
+            // }
+            //
+            // return Scaffold(
+            //     bottomNavigationBar: BottomNavigationBar(
+            //       currentIndex: _currentIndex,
+            //       onTap: _onTabTapped,
+            //       items: [
+            //         BottomNavigationBarItem(
+            //           icon: Icon(Icons.home),
+            //           label: 'Home',
+            //         ),
+            //         BottomNavigationBarItem(
+            //           icon: Icon(Icons.person),
+            //           label: 'Profile',
+            //         ),
+            //         BottomNavigationBarItem(
+            //           icon: Icon(Icons.settings),
+            //           label: 'Settings',
+            //         ),
+            //       ],
+            //     ),
+            //     body: _screens[_currentIndex]);
 
           }
       ),
@@ -169,5 +168,77 @@ class _DmsDrawerState extends State<HomeScreen> {
 
 
 
+  }
+
+
+
+}
+
+class ScaffoldWithNavigationBar extends StatelessWidget {
+  const ScaffoldWithNavigationBar({
+    super.key,
+    required this.body,
+    required this.selectedIndex,
+    required this.onDestinationSelected,
+  });
+  final Widget body;
+  final int selectedIndex;
+  final ValueChanged<int> onDestinationSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: body,
+      bottomNavigationBar: Container(
+        height: 65,
+        decoration: const BoxDecoration(
+          boxShadow: <BoxShadow>[
+            BoxShadow(
+              color: Colors.white70,
+              blurRadius: 4.0,
+              // offset: Offset(0.0, 0.75),
+            ),
+          ],
+        ),
+        child: NavigationBar(
+          indicatorShape: const CircleBorder(),
+          indicatorColor: Colors.grey,
+          elevation: 4,
+          selectedIndex: selectedIndex,
+          destinations: const [
+            NavigationDestination(
+              label: 'Home',
+              icon: Icon(Icons.home),
+              selectedIcon: Icon(
+                Icons.home,
+                color: Colors.blue,
+              ),
+            ),
+            NavigationDestination(
+              label: 'WorkOrder',
+              icon: Icon(Icons.content_paste_outlined),
+              selectedIcon: Icon(
+                Icons.content_paste_outlined,
+                color: Colors.blue,
+              ),
+            ),
+            NavigationDestination(
+              label: 'Request',
+              icon: Icon(Icons.inbox_outlined),
+              selectedIcon: Icon(
+                Icons.inbox_outlined,
+                color: Colors.blue,
+              ),
+            ),
+            NavigationDestination(label: 'More',   icon: Icon(Icons.menu),
+              selectedIcon: Icon(
+                Icons.menu,
+                color: Colors.black,
+              ),),
+          ],
+          onDestinationSelected: onDestinationSelected,
+        ),
+      ),
+    );
   }
 }

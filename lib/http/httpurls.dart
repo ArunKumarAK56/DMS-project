@@ -16,4 +16,15 @@ class HttpUrl {
   static const String ServiceBooking = '${baseUrl}api/bookservices';
 
 
+
+  static const String getAllAssets = '${baseUrl}api/assets/getall';
+  static const String getAllLocations = '${baseUrl}api/location/getall';
+  static const String getAllProblems = '${baseUrl}api/problems/getall/';
+  static const String assetPartsById = '${baseUrl}api/assetparts/partsbyassetid/';
+  static const String specifyById = '${baseUrl}api/assettechspec/getbyassetid/';
+  static const String assetById = '${baseUrl}api/assets/getbyid/';
+
+
+
+
 }

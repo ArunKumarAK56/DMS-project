@@ -61,4 +61,5 @@ class ImageResource {
   static const String video2 = 'assets/svg/video2.svg';
   static const String live = 'assets/svg/live.svg';
   static const String capture = 'assets/svg/capture.svg';
+  static const String tickIcon = 'assets/png/tick_icon.png';
 }
