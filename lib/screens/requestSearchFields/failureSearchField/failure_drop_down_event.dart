@@ -1,7 +1,8 @@
 
 import 'package:flutter/cupertino.dart';
 
-import '../../utils/base_equatable.dart';
+import '../../../utils/base_equatable.dart';
+
 
 abstract class FailureDropDownEvent extends BaseEquatable {}
 

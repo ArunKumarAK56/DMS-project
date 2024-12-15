@@ -1,3 +1,4 @@
+import 'package:dms_dealers/screens/scannerScreen/scanner_screen.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -47,6 +48,12 @@ class _DashBoardPageState extends State<DashBoardPage> {
             );
           },
           qrOnPress: () async {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (BuildContext context) =>  ScannerScreen(),
+              ),
+            );
             // var res = await Navigator.push(
             //     context,
             //     MaterialPageRoute(

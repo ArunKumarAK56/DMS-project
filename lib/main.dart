@@ -111,10 +111,7 @@ class _MyAppState extends CoreWidgetsState<MyApp> {
           },
           onGenerateRoute: getRoute,
           debugShowCheckedModeBanner: false,
-          home: addAuthBloc(
-            context,
-            const Splash(),
-          ),
+          home: Splash(),
         );
       },
     );

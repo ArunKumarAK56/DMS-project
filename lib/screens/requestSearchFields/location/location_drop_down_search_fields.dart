@@ -1,12 +1,10 @@
 // import 'package:dms_dealers/base/base_state.dart';
+// import 'package:dms_dealers/screens/requestSearchFields/location/location_bloc.dart';
 // import 'package:flutter/cupertino.dart';
 // import 'package:flutter/material.dart';
 // import 'package:flutter_bloc/flutter_bloc.dart';
 // import 'package:searchfield/searchfield.dart';
 //
-// import '../../../utils/extensions/methods.dart';
-// import '../../drawer/WorkOrderPage/work_order_page.dart';
-// import 'location_bloc.dart';
 //
 // class LocationDropDownSearchField extends StatefulWidget {
 //   final TextEditingController controller;
@@ -60,12 +58,14 @@
 //               if (state is SuccessState) {
 //                 return SearchField(
 //                   controller: widget.controller,
-//                   selectedValue:  widget.initialValue,
-//                   // textInputAction: TextInputAction.next,
+//                   selectedValue: widget.initialValue,
+//                   maxSuggestionBoxHeight: 100,
+//                   dynamicHeight: true,
 //                   searchInputDecoration:  SearchInputDecoration(
-//                     maintainHintHeight:30,
-//                     label: Text("Location"),
-//                     focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.blue)),
+//                     labelText: "Location",
+//                     focusedBorder: OutlineInputBorder(
+//                       borderSide: BorderSide(color: Colors.blue),
+//                     ),
 //                     border: OutlineInputBorder(),
 //                   ),
 //                   suggestions: state.successResponse
@@ -76,9 +76,11 @@
 //                       child: Padding(
 //                         padding: const EdgeInsets.all(5.0),
 //                         child: Text(
-//                           "${e.locationCode} - ${e.locationName}",
-//                           style:
-//                           const TextStyle(fontWeight: FontWeight.w500, color: Colors.blue),
+//                           "${e.locationCode} - ${e.locationName?.capitalize()}",
+//                           style: const TextStyle(
+//                             fontWeight: FontWeight.w500,
+//                             color: Colors.blue,
+//                           ),
 //                         ),
 //                       ),
 //                     ),
@@ -94,10 +96,10 @@
 //                     ),
 //                     boxShadow: [
 //                       BoxShadow(
-//                         color: Colors.grey.withOpacity(0.5), //color of shadow
-//                         spreadRadius: 2, //spread radius
-//                         blurRadius: 5, // blur radius
-//                         offset: Offset(0, 2),
+//                         color: Colors.grey.withOpacity(0.5),
+//                         spreadRadius: 2,
+//                         blurRadius: 5,
+//                         offset: const Offset(0, 2),
 //                       ),
 //                     ],
 //                   ),
@@ -105,14 +107,13 @@
 //                     final locations = state.successResponse
 //                         .map((e) => "${e.locationCode} - ${e.locationName?.capitalize()}")
 //                         .toList();
-//                     print("Locations are : $locations");
-//                     print("Loacation field x is $x");
-//                     if (x!.isEmpty || isNotContained(locations, x)) {
+//                     if (x == null || x.isEmpty || !locations.contains(x)) {
 //                       return 'Please Enter a Valid Location';
 //                     }
 //                     return null;
 //                   },
 //                 );
+//
 //               }
 //               return Container();
 //             },

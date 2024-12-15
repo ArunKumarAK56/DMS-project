@@ -1,3 +1,18 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../screens/drawer/drawer.dart';
+import '../screens/drawer/drawer_bloc.dart';
+import '../screens/drawer/drawer_event.dart';
+import '../screens/morePage/more_page_screen.dart';
+import '../screens/serviceRequestPage/serive_request_bloc.dart';
+import '../screens/serviceRequestPage/service_request_event.dart';
+import '../screens/serviceRequestPage/service_request_page.dart';
+import '../screens/url_page/urlpage_bloc.dart';
+import '../screens/url_page/urlpage_event.dart';
+import '../screens/woroOrder/bloc/workorder_bloc.dart';
+import '../screens/woroOrder/work_order.dart';
+
 class HttpUrl {
   //api.dealerpro.in
   static const String baseUrl = 'https://demoapi.orienseam.com/';
@@ -23,6 +38,9 @@ class HttpUrl {
   static const String assetPartsById = '${baseUrl}api/assetparts/partsbyassetid/';
   static const String specifyById = '${baseUrl}api/assettechspec/getbyassetid/';
   static const String assetById = '${baseUrl}api/assets/getbyid/';
+
+
+  static String resultData='';
 
 
 

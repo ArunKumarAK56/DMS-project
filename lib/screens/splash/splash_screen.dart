@@ -2,6 +2,9 @@ import 'dart:async';
 import 'package:dms_dealers/utils/color_resources.dart';
 import 'package:flutter/material.dart';
 
+import '../../router.dart';
+import '../../utils/image_resources.dart';
+
 class Splash extends StatefulWidget {
   const Splash({super.key});
 
@@ -10,26 +13,31 @@ class Splash extends StatefulWidget {
 }
 
 class SplashState extends State<Splash> {
-  Timer? _timer;
+
   @override
   void initState() {
-    _timer = Timer(Duration(milliseconds: 1000), () {});
     super.initState();
+
+    Future.delayed(Duration(seconds: 5), () {
+        Navigator.pushReplacementNamed(context, AppRoutes.loginScreen);
+    });
+
   }
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      backgroundColor: ColorResource.color0C3062,
+    return Scaffold(
+      // backgroundColor: Colors.white,
       body: Padding(
-        padding: EdgeInsets.all(20),
+        padding:  EdgeInsets.all(20),
         child: Center(
-          child: Text('DELEARS PRO',
-    style: TextStyle(
-    fontSize: 33,
-      color: Colors.white,
-    ),
-    ),
+          child: Image.asset(
+            ImageResource.splashLogo,
+            // fit: BoxFit.contain,
+            width: 200,
+            height: 200,
+            // color: Colors.white,
+          )
         ),
       )
     );

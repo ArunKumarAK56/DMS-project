@@ -3,6 +3,7 @@ import 'package:dms_dealers/screens/profile_view/edit_profile_screen.dart';
 import 'package:dms_dealers/screens/profile_view/profile_view_bloc.dart';
 import 'package:dms_dealers/screens/profile_view/profile_view_event.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mailer/mailer.dart';
@@ -10,6 +11,9 @@ import 'package:mailer/smtp_server.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
+
+import '../../router.dart';
+import '../../utils/color_resources.dart';
 
 
 
@@ -22,6 +26,81 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  void showLogoutDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          elevation: 10,
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.exit_to_app,
+                  size: 50,
+                  color: Colors.redAccent,
+                ),
+                SizedBox(height: 20),
+                Text(
+                  'Are you sure you want to logout?',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.grey,
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pop(); // Close dialog
+                      },
+                      child: Text('No'),
+                    ),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: ColorResource.primaryColor,
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      onPressed: () {
+                        // Navigator.of(context).pop(); // Close dialog
+                        Navigator.pushReplacementNamed(context, AppRoutes.loginScreen);
+                      },
+                      child: Text('Yes'),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -135,7 +214,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 isVisible: false,
               ),
               onTap: () {
-                context.pushReplacement("/");
+                showLogoutDialog(context);
               }),
           const Divider(
             thickness: 1,

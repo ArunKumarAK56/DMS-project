@@ -9,6 +9,10 @@ import '../../utils/color_resources.dart';
 import '../../utils/image_resources.dart';
 import '../drawer/WorkOrderPage/work_order_page_calendar.dart';
 import '../drawer/widgets/app_bar.dart';
+import '../homeScreen/home_bloc.dart';
+import '../homeScreen/home_event.dart';
+import '../homeScreen/home_screen.dart';
+import '../scannerScreen/scanner_screen.dart';
 import '../workDetailScreen/work_detail_page.dart';
 import 'bloc/workorder_bloc.dart';
 import 'model/workorder.dart';
@@ -177,19 +181,26 @@ class _WorkOrdersPageState extends State<WorkOrdersPage> {
                           ));
                     },
                     qrOnPress: () async {
-                      // var res = await Navigator.push(
-                      //     context,
-                      //     MaterialPageRoute(
-                      //       builder: (context) =>
-                      //       const SimpleBarcodeScannerPage(),
-                      //     ));
-                      // if (res is String) {
-                      //   print("resuuuult${res}");
-                      //   Navigator.push(context,
-                      //       MaterialPageRoute(builder: (context) {
-                      //         return WorkOrdersPage(result: res);
-                      //       }));
-                      // }
+                      var res = await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ScannerScreen(),
+                          ));
+                      if (res is String) {
+                        if (res.isNotEmpty) {
+                          print("checkDataReturn if ${res}");
+                          BlocProvider(
+                              create: (BuildContext context) =>
+                              HomeBloc()..add(HomeInitialEvent(context: context)),
+                              child: HomeScreen(index: 1,results: res,));
+                        } else {
+                          print("checkDataReturn else  ${res}");
+                          BlocProvider(
+                              create: (BuildContext context) =>
+                              HomeBloc()..add(HomeInitialEvent(context: context)),
+                              child: HomeScreen(index: 2,results: res,));
+                        }
+                      }
 
                     },
                     notificationOnPress: () {},

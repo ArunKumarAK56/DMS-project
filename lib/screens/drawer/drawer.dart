@@ -1,10 +1,20 @@
 import 'package:dms_dealers/screens/drawer/widgets/app_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../utils/color_resources.dart';
+import '../../utils/extensions/scanner.dart';
 import '../homeBottom/dash_board_bottom_widget.dart';
+import '../homeScreen/home_bloc.dart';
+import '../homeScreen/home_event.dart';
+import '../homeScreen/home_screen.dart';
+import '../scannerScreen/scanner_screen.dart';
 import '../settings/settings_screen.dart';
 import '../woroOrder/work_order.dart';
+import 'drawer_bloc.dart';
+import 'drawer_event.dart';
 
 
 class DashBoardPage extends StatefulWidget {
@@ -20,6 +30,10 @@ class _DashBoardPageState extends State<DashBoardPage> {
 
   @override
   void initState() {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: ColorResource.statusBarColor,
+      statusBarIconBrightness: Brightness.dark, // Change the icons' brightness
+    ));
     super.initState();
   }
 
@@ -46,23 +60,26 @@ class _DashBoardPageState extends State<DashBoardPage> {
               );
             },
             qrOnPress: () async {
-              // var res = await Navigator.push(
-              //     context,
-              //     MaterialPageRoute(
-              //       builder: (context) => const SimpleBarcodeScannerPage(),
-              //     ));
-              // if (res is String) {
-              //   if (res == "-1") {
-              //     Navigator.push(context, MaterialPageRoute(builder: (context) {
-              //       return DashBoardPage();
-              //     }));
-              //   } else {
-              //     result = res;
-              //     Navigator.push(context, MaterialPageRoute(builder: (context) {
-              //       return WorkOrdersPage(result: result);
-              //     }));
-              //   }
-              // }
+              var res = await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ScannerScreen(),
+                  ));
+              if (res is String) {
+                if (res.isNotEmpty) {
+                  print("checkDataReturn if ${res}");
+                  BlocProvider(
+                      create: (BuildContext context) =>
+                      HomeBloc()..add(HomeInitialEvent(context: context)),
+                      child: HomeScreen(index: 1,results: res,));
+                } else {
+                  print("checkDataReturn else  ${res}");
+                  BlocProvider(
+                      create: (BuildContext context) =>
+                      HomeBloc()..add(HomeInitialEvent(context: context)),
+                      child: HomeScreen(index: 2,results: res,));
+                }
+              }
             },
             notificationOnPress: () {},
           ),

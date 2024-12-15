@@ -49,8 +49,9 @@
 //             return  SearchField(
 //               controller: widget.controller,
 //               textInputAction: TextInputAction.done,
+//               maxSuggestionBoxHeight: 100,
+//               dynamicHeight: true,
 //               searchInputDecoration: SearchInputDecoration(
-//                 maintainHintHeight:30,
 //                 label: Text("Failure Class"),
 //                 focusedBorder: OutlineInputBorder(
 //                   borderSide: BorderSide(color: Colors.blue),

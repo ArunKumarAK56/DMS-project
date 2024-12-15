@@ -96,7 +96,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     PreferenceHelper.setLoginStatus(true);
                     hideLoader();
                     showToast('Login Successfully');
-                    Navigator.pushNamed(context, AppRoutes.drawerScreen);
+                    Navigator.pushNamed(context, AppRoutes.homeScreen);
                   }
                 }
               });

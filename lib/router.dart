@@ -1,4 +1,3 @@
-
 import 'package:dms_dealers/screens/drawer/drawer.dart';
 import 'package:dms_dealers/screens/drawer/drawer_bloc.dart';
 import 'package:dms_dealers/screens/drawer/drawer_event.dart';
@@ -16,6 +15,9 @@ import 'package:dms_dealers/screens/profile/profile_details_screen.dart';
 import 'package:dms_dealers/screens/profile_view/profile_view_bloc.dart';
 import 'package:dms_dealers/screens/profile_view/profile_view_event.dart';
 import 'package:dms_dealers/screens/profile_view/profile_view_screen.dart';
+import 'package:dms_dealers/screens/splash/splash_bloc.dart';
+import 'package:dms_dealers/screens/splash/splash_event.dart';
+import 'package:dms_dealers/screens/splash/splash_screen.dart';
 import 'package:dms_dealers/screens/url_page/urlpage_bloc.dart';
 import 'package:dms_dealers/screens/url_page/urlpage_event.dart';
 import 'package:dms_dealers/screens/url_page/urlpage_screen.dart';
@@ -29,6 +31,7 @@ import 'screens/profile/profile_details_bloc.dart';
 class AppRoutes {
   static const String dashboardScreen = 'dashboard_screen';
   static const String loginScreen = 'login_screen';
+  static const String splashScreen = 'splash_screen';
   static const String otpScreen = 'otp_screen';
   static const String drawerScreen = 'drawer_screen';
   static const String homeScreen = 'home_screen';
@@ -39,11 +42,14 @@ class AppRoutes {
 
 Route<dynamic>? getRoute(RouteSettings settings) {
   switch (settings.name) {
+    case AppRoutes.splashScreen:
+      return _buildSplashScreen();
     case AppRoutes.loginScreen:
-      return _buildHomeScreen();
-        _buildLoginScreen();
+      return _buildLoginScreen();
     case AppRoutes.otpScreen:
       return _buildOtpScreen();
+    case AppRoutes.homeScreen:
+      return _buildHomeScreen();
     case AppRoutes.drawerScreen:
       return _buildDrawerScreen();
     case AppRoutes.profile:
@@ -54,10 +60,18 @@ Route<dynamic>? getRoute(RouteSettings settings) {
   return null;
 }
 
+
+Route<dynamic> _buildSplashScreen() {
+  return MaterialPageRoute(
+      builder: (BuildContext context) => PageBuilder.buildSplashScreen());
+}
+
 Route<dynamic> _buildLoginScreen() {
   return MaterialPageRoute(
       builder: (BuildContext context) => PageBuilder.buildLoginScreen());
 }
+
+
 Route<dynamic> _buildHomeScreen() {
   return MaterialPageRoute(
       builder: (BuildContext context) => PageBuilder.buildHomeScreen());
@@ -80,7 +94,8 @@ Route<dynamic> _buildProfileScreen() {
 
 Route<dynamic> _buildProfileDetailsScreen() {
   return MaterialPageRoute(
-      builder: (BuildContext context) => PageBuilder.buildProfileDetailsScreen());
+      builder: (BuildContext context) =>
+          PageBuilder.buildProfileDetailsScreen());
 }
 
 Route<dynamic> _buildurlScreen() {
@@ -88,18 +103,25 @@ Route<dynamic> _buildurlScreen() {
       builder: (BuildContext context) => PageBuilder.buildUrlScreen());
 }
 
-
 class PageBuilder {
-  static Widget buildLoginScreen() {
+  static Widget buildSplashScreen() {
+    return BlocProvider(
+        create: (BuildContext context) =>
+        SplashBloc()..add(SplashInitialEvent(context: context)),
+        child: const Splash());
+  }
+
+ static Widget buildLoginScreen() {
     return BlocProvider(
         create: (BuildContext context) =>
             LoginBloc()..add(LoginInitialEvent(context: context)),
         child: const LoginScreen());
   }
+
   static Widget buildHomeScreen() {
     return BlocProvider(
         create: (BuildContext context) =>
-        HomeBloc()..add(HomeInitialEvent(context: context)),
+            HomeBloc()..add(HomeInitialEvent(context: context)),
         child: const HomeScreen());
   }
 
@@ -110,42 +132,34 @@ class PageBuilder {
         child: const OTPScreen());
   }
 
-
   static Widget buildDrawerScreen() {
     return BlocProvider(
         create: (BuildContext context) =>
-        DrawerBloc()..add(DrawerInitialEvent(context: context)),
+            DrawerBloc()..add(DrawerInitialEvent(context: context)),
         child: DashBoardPage());
   }
 
-
   static Widget buildProfileScreen() {
     return BlocProvider(
-        create: (BuildContext context) =>
-        ProfileDetailsBloc()..add(ProfileDetailsEventInitialEvent(context: context)),
+        create: (BuildContext context) => ProfileDetailsBloc()
+          ..add(ProfileDetailsEventInitialEvent(context: context)),
         child: const ProfileDetailsScreen());
   }
 
   static Widget buildProfileDetailsScreen() {
     return BlocProvider(
-        create: (BuildContext context) =>
-        ProfileViewBloc()..add(ProfileViewEventInitialEvent(context: context)),
+        create: (BuildContext context) => ProfileViewBloc()
+          ..add(ProfileViewEventInitialEvent(context: context)),
         child: const ProfileView());
   }
 
   static Widget buildUrlScreen() {
     return BlocProvider(
         create: (BuildContext context) =>
-        UrlpageBloc()..add(UrlpageInitialEvent(context: context)),
+            UrlpageBloc()..add(UrlpageInitialEvent(context: context)),
         child: const UrlPage());
   }
-
-
-
-
 }
-
-
 
 Widget addAuthBloc(BuildContext context, Widget widget) {
   return BlocListener(
@@ -158,12 +172,11 @@ Widget addAuthBloc(BuildContext context, Widget widget) {
         await Navigator.pushReplacementNamed(context, AppRoutes.loginScreen);
       }
 
-
-
       if (state is AuthenticationAuthenticated) {
         while (Navigator.canPop(context)) {
           Navigator.pop(context);
         }
+        // _buildHomeScreen();
         await Navigator.pushReplacementNamed(context, AppRoutes.homeScreen);
       }
     },
@@ -188,8 +201,9 @@ Widget addAuthBloc(BuildContext context, Widget widget) {
                   SizedBox(
                     height: 30,
                   ),
-                  Text('No Internet Connection',
-                      ),
+                  Text(
+                    'No Internet Connection',
+                  ),
                 ],
               ),
             ),

@@ -53,8 +53,10 @@
 //             return SearchField(
 //               onSearchTextChanged: widget.onSearchTextChanged,
 //               controller: widget.controller,
+//               maxSuggestionBoxHeight: 100,
+//               dynamicHeight: true,
+//               suggestionDirection: SuggestionDirection.flex,
 //               searchInputDecoration:  SearchInputDecoration(
-//                 maintainHintHeight:30,
 //                 label: Text("Asset"),
 //                 focusedBorder: OutlineInputBorder(
 //                     borderSide: BorderSide(color: Colors.blue)),

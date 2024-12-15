@@ -9,6 +9,7 @@ import 'package:dms_dealers/utils/color_resources.dart';
 import 'package:dms_dealers/utils/extensions/widget_extension.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
@@ -92,6 +93,10 @@ class _ServiceRequestPageState extends State<ServiceRequestPage> {
 
   @override
   void initState() {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: ColorResource.statusBarColor,
+      statusBarIconBrightness: Brightness.dark, // Change the icons' brightness
+    ));
     _bloc.add(GetServiceRequestsEvent());
     super.initState();
   }
@@ -543,7 +548,7 @@ class _ServiceRequestPageState extends State<ServiceRequestPage> {
     );
   }
 
-  ///////////////////////// BUILD ADD REQUEST POP UP \\\\\\\\\\\\\\\\\\\\\\\\\\
+  /////////////////////// BUILD ADD REQUEST POP UP \\\\\\\\\\\\\\\\\\\\\\\\\\
   // Future<dynamic> buildAddRequestPopUp(BuildContext context) {
   //   BarcodeCapture? barcode;
   //   String scanValue;
