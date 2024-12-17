@@ -8,18 +8,17 @@ abstract class DrawerEvent extends BaseEquatable {}
 class DrawerInitialEvent extends DrawerEvent {
   BuildContext? context;
   dynamic arguments;
-
   DrawerInitialEvent({this.context});
 }
 
-class ProfileDetailsApiEvent extends DrawerEvent {
-  ProfileDetailsApiEvent({this.context, this.arguments});
+class GetWorkOrderEvent extends DrawerEvent {
+  GetWorkOrderEvent({this.context});
   BuildContext? context;
   dynamic arguments;
 }
 
-class GetUserVehicleEvent extends DrawerEvent {
-  GetUserVehicleEvent({this.context, this.arguments});
+class GetFavoriteEvent extends DrawerEvent {
+  GetFavoriteEvent({this.context});
   BuildContext? context;
   dynamic arguments;
 }

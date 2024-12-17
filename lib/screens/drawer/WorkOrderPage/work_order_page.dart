@@ -2,6 +2,8 @@ import 'package:dms_dealers/base/base_state.dart';
 import 'package:dms_dealers/screens/drawer/WorkOrderPage/work_order_page_calendar.dart';
 import 'package:dms_dealers/screens/drawer/WorkOrderPage/workorder_bloc.dart';
 import 'package:dms_dealers/screens/drawer/WorkOrderPage/workorders.dart';
+import 'package:dms_dealers/screens/drawer/drawer_bloc.dart';
+import 'package:dms_dealers/screens/drawer/model/workorder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -18,7 +20,7 @@ import '../widgets/app_bar.dart';
 /// This page is from Dashboard
 class WorkOrderPage extends StatefulWidget {
   /// Receiving workorders from [DASHBOARD PAGE]
-  final List<WorkorderEntity> workOrders;
+  final List<Result> workOrders;
   final String title;
   final Color? color;
 
@@ -30,8 +32,7 @@ class WorkOrderPage extends StatefulWidget {
   });
 
   @override
-  State<WorkOrderPage> createState() =>
-      _DashboardWorkOrdersPageState();
+  State<WorkOrderPage> createState() => _DashboardWorkOrdersPageState();
 }
 
 /////////////////////////// STATE \\\\\\\\\\\\\\\\\\\\\\\\\\
@@ -56,7 +57,7 @@ class _DashboardWorkOrdersPageState extends State<WorkOrderPage> {
   final selectedCategories = ValueNotifier<Set<String>>({});
 
   /// Local variable for getting and showing filtered workorders.
-  List<WorkorderEntity> _foundWorkOrder = [];
+  List<Result> _foundWorkOrder = [];
   final TextEditingController _searchController = TextEditingController();
 
 
@@ -82,7 +83,7 @@ class _DashboardWorkOrdersPageState extends State<WorkOrderPage> {
 
   /// Function used for search functionality
   void _searchWorkOrder(String enteredKeyword) {
-    List<WorkorderEntity> results;
+    List<Result> results;
 
     if (enteredKeyword.isEmpty) {
       results = widget.workOrders; // Ensure workOrders is non-null
@@ -247,544 +248,269 @@ class _DashboardWorkOrdersPageState extends State<WorkOrderPage> {
 
       /////////////////////////// BODY  \\\\\\\\\\\\\\\\\\\\\\\\\\
 
-      body: BlocBuilder<WorkorderBloc, BaseState>(
-        builder: (context, state) {
-          return Padding(
-            padding: const EdgeInsets.all(6.0),
-            child: Column(
-              children: [
-                widget.workOrders.isNotEmpty
-                    ?
-                /* ------------------ Work Order List Section------------------ */
-                Expanded(
-                  child: ListView.separated(
-                      itemCount: _foundWorkOrder.length,
-                      // The list items
-                      itemBuilder: (context, index) {
-                        var workOrder = _foundWorkOrder[index];
-                        String? priority;
-                        if (workOrder.priorityName!.isNotEmpty) {
-                          priority = workOrder.priorityName!
-                              .startsWith("N")
-                              ? workOrder.priorityName?.substring(0, 7)
-                              : workOrder.priorityName?.substring(0, 10);
-                        } else {
-                          priority = "";
-                        }
+      body: Padding(
+        padding: const EdgeInsets.all(6.0),
+        child: Column(
+          children: [
+            widget.workOrders.isNotEmpty
+                ?
+            /* ------------------ Work Order List Section------------------ */
+            Expanded(
+              child: ListView.separated(
+                  itemCount: _foundWorkOrder.length,
+                  // The list items
+                  itemBuilder: (context, index) {
+                    var workOrder = _foundWorkOrder[index];
+                    String? priority;
+                    if (workOrder.priorityName != null) {
+                      priority = workOrder.priorityName!.toString()
+                          .startsWith("N")
+                          ? workOrder.priorityName?.toString().substring(0, 7)
+                          : workOrder.priorityName?.toString().substring(0, 10);
+                    } else {
+                      priority = "";
+                    }
 
-                        selectedItem[index] =
-                            workOrder.isFavouriteWO ?? false;
+                    selectedItem[index] =
+                        workOrder.isFavouriteWo ?? false;
 
-                        print("${workOrder.isFavouriteWO}");
+                    print("${workOrder.isFavouriteWo}");
 
-                        isSelectedData =  selectedItem[index];
+                    isSelectedData =  selectedItem[index];
 
-                        return SizedBox(
-                          child: Card(
-                            margin: const EdgeInsets.all(10),
-                            elevation: 8,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16)),
-                            child: Padding(
-                              padding: const EdgeInsets.all(10),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                crossAxisAlignment:
-                                CrossAxisAlignment.start,
+                    return SizedBox(
+                      child: Card(
+                        margin: const EdgeInsets.all(10),
+                        elevation: 8,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16)),
+                        child: Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment:
+                            CrossAxisAlignment.start,
+                            children: [
+                              /* ------------------ Status ------------------ */
+                              Container(
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      Colors.green[400]!,
+                                      Colors.green[600]!
+                                    ],
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                  ),
+                                  borderRadius:
+                                  BorderRadius.circular(8),
+                                ),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 8, vertical: 4),
+                                child: Text(
+                                  workOrder.status.toString() ?? "",
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 12),
+                              Row(
+                                mainAxisAlignment:
+                                MainAxisAlignment.spaceBetween,
                                 children: [
-                                  /* ------------------ Status ------------------ */
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      gradient: LinearGradient(
-                                        colors: [
-                                          Colors.green[400]!,
-                                          Colors.green[600]!
-                                        ],
-                                        begin: Alignment.topLeft,
-                                        end: Alignment.bottomRight,
-                                      ),
-                                      borderRadius:
-                                      BorderRadius.circular(8),
-                                    ),
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 8, vertical: 4),
+                                  /* ------------------ Work Tile ------------------ */
+                                  SizedBox(
+                                    width: MediaQuery.sizeOf(context)
+                                        .width *
+                                        0.5,
                                     child: Text(
-                                      workOrder.status ?? "",
+                                      workOrder.workOrderName ?? "",
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 2,
                                       style: const TextStyle(
-                                        color: Colors.white,
+                                        fontSize: 18,
+                                        fontFamily: 'Aeon',
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
                                   ),
-                                  const SizedBox(height: 12),
-                                  Row(
-                                    mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                  /* ------------------ WO No. Priority ------------------ */
+                                  Column(
+                                    crossAxisAlignment:
+                                    CrossAxisAlignment.end,
                                     children: [
-                                      /* ------------------ Work Tile ------------------ */
-                                      SizedBox(
-                                        width: MediaQuery.sizeOf(context)
-                                            .width *
-                                            0.5,
-                                        child: Text(
-                                          workOrder.workOrderName ?? "",
-                                          overflow: TextOverflow.ellipsis,
-                                          maxLines: 2,
-                                          style: const TextStyle(
-                                            fontSize: 18,
-                                            fontFamily: 'Aeon',
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ),
-                                      /* ------------------ WO No. Priority ------------------ */
-                                      Column(
-                                        crossAxisAlignment:
-                                        CrossAxisAlignment.end,
-                                        children: [
-                                          Text(
-                                            "#${workOrder.code?.trim()}",
-                                            style: TextStyle(
-                                              fontSize: 14,
-                                              fontFamily: 'Aeon',
-                                              color: Colors.grey[600],
-                                            ),
-                                          ),
-                                          Text(
-                                            priority == ""
-                                                ? ""
-                                                : priority!,
-                                            style: TextStyle(
-                                                fontSize: 14,
-                                                fontFamily: 'Aeon',
-                                                color: priority ==
-                                                    "Emergency "
-                                                    ? Colors.red[600]
-                                                    : Colors.blue[600]),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                  Divider(color: Colors.grey[300]),
-                                  const SizedBox(height: 8),
-
-                                  /* ------------------ Other Details - First Line ------------------ */
-                                  Row(
-                                    children: [
-                                      Icon(Icons.location_on,
-                                          color: Colors.grey[600]),
-                                      const SizedBox(width: 8),
                                       Text(
-                                        "${workOrder.locationCode ?? ""} - ${workOrder.locationName ?? ""}",
-                                        style: const TextStyle(
-                                          fontSize: 16,
-                                          fontFamily: 'Aeon',
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 8),
-                                  /* ------------------ Other Details - Second Line ------------------ */
-
-                                  Row(
-                                    children: [
-                                      Icon(Icons.business_center,
-                                          color: Colors.grey[600]),
-                                      const SizedBox(width: 8),
-                                      Text(
-                                        "${workOrder.assetCode ?? ""} - ${workOrder.assetName ?? ""}",
-                                        style: const TextStyle(
-                                          fontSize: 16,
-                                          fontFamily: 'Aeon',
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 8),
-
-                                  /* ------------------ Other Details - Third Line ------------------ */
-
-                                  Row(
-                                    children: [
-                                      Icon(Icons.person,
-                                          color: Colors.grey[600]),
-                                      const SizedBox(width: 8),
-                                      const Text(
-                                        'Me',
+                                        "#${workOrder.code?.trim()}",
                                         style: TextStyle(
-                                          fontSize: 16,
+                                          fontSize: 14,
                                           fontFamily: 'Aeon',
+                                          color: Colors.grey[600],
                                         ),
+                                      ),
+                                      Text(
+                                        priority == ""
+                                            ? ""
+                                            : priority!,
+                                        style: TextStyle(
+                                            fontSize: 14,
+                                            fontFamily: 'Aeon',
+                                            color: priority ==
+                                                "Emergency "
+                                                ? Colors.red[600]
+                                                : Colors.blue[600]),
                                       ),
                                     ],
                                   ),
-                                  const SizedBox(height: 12),
-                                  Align(
-                                    alignment: Alignment.centerRight,
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        ElevatedButton(
-                                          onPressed: () async {
-                                            setState(() {
-                                              // Toggle the selected item state
-                                              selectedItem[index] = !isSelectedData!;
+                                ],
+                              ),
+                              Divider(color: Colors.grey[300]),
+                              const SizedBox(height: 8),
 
-                                              isSelectedData = !isSelectedData!;
-                                              _foundWorkOrder[index].isFavouriteWO = !_foundWorkOrder[index].isFavouriteWO!;
-                                            });
-
-                                            // Determine if any item is selected
-                                            isSelectItem = selectedItem.containsValue(true);
-
-
-                                            print("isSelectItem${_foundWorkOrder[index].isFavouriteWO!}");
-
-                                            try {
-                                              // Call the API to save the work order status update
-                                              await WorkOrderStatusUpdateApi.saveWorkOrder(
-                                                workOrder.workOrderId!,
-                                                _foundWorkOrder[index].isFavouriteWO!,  // Pass the toggled state
-                                                workOrder.assetId!,
-                                              );
-
-                                              // After successful API call, update the state to reflect the change
-                                            } catch (error) {
-                                              // Handle API errors here
-                                              print('Error saving work order status: $error');
-                                            }
-                                          },
-                                          style: ElevatedButton.styleFrom(
-                                            backgroundColor: Colors.white,
-                                            padding: const EdgeInsets.all(12), // Background color
-                                          ),
-                                          child: Icon(
-                                            size: isSelectedData! ? 21 : 18,
-                                            isSelectedData! ? Icons.bookmark_added : Icons.bookmark_add,
-                                            color: isSelectedData! ? Colors.green : Colors.grey.shade400,
-                                          ),
-                                        ),
-                                        const SizedBox(width: 8),
-                                        ElevatedButton(
-                                          onPressed: () {
-                                            // Navigator.push(
-                                            //   context,
-                                            //   MaterialPageRoute(
-                                            //     builder: (context) =>
-                                            //         WorkorderDetailsPage(
-                                            //             workOrder: state
-                                            //                 .workOrders![
-                                            //             index]),
-                                            //   ),
-                                            // );
-                                          },
-                                          style: ElevatedButton.styleFrom(
-                                            shape: const CircleBorder(),
-                                            backgroundColor: Colors.white,
-                                            padding: const EdgeInsets.all(
-                                                12), // Background color
-                                          ),
-                                          child: const Icon(
-                                              Icons.more_vert,
-                                              color: Colors.black),
-                                        ),
-                                      ],
+                              /* ------------------ Other Details - First Line ------------------ */
+                              Row(
+                                children: [
+                                  Icon(Icons.location_on,
+                                      color: Colors.grey[600]),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    "${workOrder.locationCode ?? ""} - ${workOrder.locationName ?? ""}",
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontFamily: 'Aeon',
                                     ),
                                   ),
                                 ],
                               ),
-                            ),
-                          ),
+                              const SizedBox(height: 8),
+                              /* ------------------ Other Details - Second Line ------------------ */
 
-                          // child: Padding(
-                          //   padding: const EdgeInsets.all(8.0),
-                          //   child: Column(
-                          //     crossAxisAlignment:
-                          //         CrossAxisAlignment.start,
-                          //     children: [
-                          //       /* ------------------ Status, WO No. Priority ------------------ */
-                          //       Row(
-                          //         mainAxisAlignment:
-                          //             MainAxisAlignment.spaceBetween,
-                          //         children: [
-                          //           /* ------------------ Status ------------------ */
-                          //           Container(
-                          //             decoration: BoxDecoration(
-                          //                 color: Colors.green,
-                          //                 borderRadius:
-                          //                     BorderRadius.circular(10)),
-                          //             child: Padding(
-                          //               padding:
-                          //                   const EdgeInsets.symmetric(
-                          //                       vertical: 1.5,
-                          //                       horizontal: 6),
-                          //               child: Text(
-                          //                   workOrder.status ?? "",
-                          //                   style: const TextStyle(
-                          //                       color: Colors.white)),
-                          //             ),
-                          //           ),
-                          //
-                          //           /* ------------------ WO No. & Priority ------------------ */
-                          //           Row(
-                          //             children: [
-                          //               /* ------------------ WO No. ------------------ */
-                          //               Container(
-                          //                 decoration: BoxDecoration(
-                          //                     color: Colors.grey.shade300,
-                          //                     borderRadius:
-                          //                         BorderRadius.circular(
-                          //                             3)),
-                          //                 child: Padding(
-                          //                   padding: const EdgeInsets
-                          //                       .symmetric(
-                          //                       vertical: 1.5,
-                          //                       horizontal: 6),
-                          //                   child: Text(
-                          //                     "#${workOrder.code?.trim()}",
-                          //                     style: TextStyle(
-                          //                         color: Colors
-                          //                             .grey.shade600),
-                          //                   ),
-                          //                 ),
-                          //               ),
-                          //               const SizedBox(
-                          //                 width: 5,
-                          //               ),
-                          //
-                          //               /* ------------------ Priority ------------------ */
-                          //
-                          //               Container(
-                          //                 decoration: BoxDecoration(
-                          //                   color: Colors.grey.shade300,
-                          //                   borderRadius:
-                          //                       BorderRadius.circular(3),
-                          //                 ),
-                          //                 child: Padding(
-                          //                   padding: const EdgeInsets
-                          //                       .symmetric(
-                          //                       vertical: 1.5,
-                          //                       horizontal: 6),
-                          //                   child: Text(
-                          //                     overflow:
-                          //                         TextOverflow.ellipsis,
-                          //                     softWrap: false,
-                          //                     priority == ""
-                          //                         ? ""
-                          //                         : priority!,
-                          //                     style: TextStyle(
-                          //                         color: priority ==
-                          //                                 "Emergency "
-                          //                             ? Colors.red
-                          //                             : Colors.blue),
-                          //                   ),
-                          //                 ),
-                          //               ),
-                          //             ],
-                          //           )
-                          //         ],
-                          //       ),
-                          //       const SizedBox(
-                          //         height: 15,
-                          //       ),
-                          //
-                          //       /* ------------------ Work Tile ------------------ */
-                          //
-                          //       Text(
-                          //         workOrder.workOrderName ?? "",
-                          //         style: const TextStyle(
-                          //             fontWeight: FontWeight.bold),
-                          //       ),
-                          //       const SizedBox(
-                          //         height: 15,
-                          //       ),
-                          //
-                          //       /* ------------------ Other Details - First Line ------------------ */
-                          //
-                          //       Row(
-                          //         mainAxisAlignment:
-                          //             MainAxisAlignment.start,
-                          //         children: [
-                          //           Icon(
-                          //             size: 18,
-                          //             Icons.check_circle_outline_rounded,
-                          //             color: Colors.grey.shade400,
-                          //           ),
-                          //           const SizedBox(
-                          //             width: 10,
-                          //           ),
-                          //           // Text(
-                          //           //   // DateFormat.yMMMEd().format(workOrder.plannedEndDate)
-                          //           //   DateFormat.yMMMd().format(workOrder.targetStartDate!),
-                          //           //   style: const TextStyle(color: Colors.blue),
-                          //           // ),
-                          //         ],
-                          //       ),
-                          //       const SizedBox(
-                          //         height: 8,
-                          //       ),
-                          //
-                          //       /* ------------------ Other Details - Second Line ------------------ */
-                          //
-                          //       Row(
-                          //         mainAxisAlignment:
-                          //             MainAxisAlignment.start,
-                          //         children: [
-                          //           Icon(
-                          //             size: 18,
-                          //             Icons.approval_outlined,
-                          //             color: Colors.grey.shade400,
-                          //           ),
-                          //           const SizedBox(
-                          //             width: 10,
-                          //           ),
-                          //           Text(
-                          //             workOrder.locationName ?? "",
-                          //             style: TextStyle(
-                          //                 color: Colors.grey.shade400),
-                          //           ),
-                          //         ],
-                          //       ),
-                          //       const SizedBox(
-                          //         height: 8,
-                          //       ),
-                          //
-                          //       /* ------------------ Other Details - Third Line ------------------ */
-                          //
-                          //       Row(
-                          //         mainAxisAlignment:
-                          //             MainAxisAlignment.start,
-                          //         children: [
-                          //           Icon(
-                          //             size: 18,
-                          //             Icons.token_rounded,
-                          //             color: Colors.grey.shade400,
-                          //           ),
-                          //           const SizedBox(
-                          //             width: 10,
-                          //           ),
-                          //           Text(
-                          //             workOrder.assetName ?? "",
-                          //             style: TextStyle(
-                          //                 color: Colors.grey.shade400),
-                          //           )
-                          //         ],
-                          //       ),
-                          //       const SizedBox(
-                          //         height: 8,
-                          //       ),
-                          //
-                          //       /* ------------------ Other Details - Last Line ------------------ */
-                          //
-                          //       Row(
-                          //         mainAxisAlignment:
-                          //             MainAxisAlignment.spaceBetween,
-                          //         children: [
-                          //           Row(
-                          //             mainAxisAlignment:
-                          //                 MainAxisAlignment.start,
-                          //             children: [
-                          //               Icon(
-                          //                 size: 18,
-                          //                 Icons.person_outline_rounded,
-                          //                 color: Colors.grey.shade400,
-                          //               ),
-                          //               const SizedBox(
-                          //                 width: 10,
-                          //               ),
-                          //               Container(
-                          //                 decoration: BoxDecoration(
-                          //                     color: Colors.grey.shade300,
-                          //                     borderRadius:
-                          //                         BorderRadius.circular(
-                          //                             3)),
-                          //                 child: Padding(
-                          //                   padding: const EdgeInsets
-                          //                       .symmetric(
-                          //                       vertical: 1.5,
-                          //                       horizontal: 6),
-                          //                   child: Text("Me",
-                          //                       style: TextStyle(
-                          //                           color: Colors
-                          //                               .grey.shade400)),
-                          //                 ),
-                          //               ),
-                          //             ],
-                          //           ),
-                          //
-                          //           /* ------------------ Bookmark And More  ------------------ */
-                          //           Row(
-                          //             mainAxisAlignment:
-                          //                 MainAxisAlignment.start,
-                          //             children: [
-                          //               InkWell(
-                          //                 onTap: () {
-                          //                   setState(() {
-                          //                     selectedItem[index] =
-                          //                         !isSelectedData;
-                          //                     isSelectItem = selectedItem
-                          //                         .containsValue(true);
-                          //                   });
-                          //                 },
-                          //                 child: Icon(
-                          //                   size:
-                          //                       isSelectedData! ? 21 : 18,
-                          //                   isSelectedData
-                          //                       ? Icons.bookmark_added
-                          //                       : Icons.bookmark_add,
-                          //                   color: isSelectedData
-                          //                       ? Colors.green
-                          //                       : Colors.grey.shade400,
-                          //                   fill: 1.0,
-                          //                 ),
-                          //               ),
-                          //               const SizedBox(
-                          //                 width: 10,
-                          //               ),
-                          //               InkWell(
-                          //                 onTap: () {
-                          //                   Navigator.push(
-                          //                     context,
-                          //                     MaterialPageRoute(
-                          //                         builder: (context) =>
-                          //                             WorkorderDetailsPage(
-                          //                                 workOrder:
-                          //                                     _foundWorkOrder[
-                          //                                         index])),
-                          //                   ).then((value) =>
-                          //                       setState(() {}));
-                          //                 },
-                          //                 child: Icon(
-                          //                   size: 18,
-                          //                   Icons.more_horiz_rounded,
-                          //                   color: Colors.grey.shade400,
-                          //                 ),
-                          //               ),
-                          //             ],
-                          //           ),
-                          //         ],
-                          //       )
-                          //     ],
-                          //   ),
-                          // ),
-                        );
-                      },
-                      // The separators
-                      separatorBuilder: (context, index) {
-                        return Divider(
-                          thickness: 3,
-                          color: Colors.grey.shade300,
-                        );
-                      }),
-                )
-                    : const Center(
-                  child: Text("No WorkOrders Available"),
-                )
-              ],
-            ),
-          );
-        },
+                              Row(
+                                children: [
+                                  Icon(Icons.business_center,
+                                      color: Colors.grey[600]),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    "${workOrder.assetCode ?? ""} - ${workOrder.assetName ?? ""}",
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontFamily: 'Aeon',
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 8),
+
+                              /* ------------------ Other Details - Third Line ------------------ */
+
+                              Row(
+                                children: [
+                                  Icon(Icons.person,
+                                      color: Colors.grey[600]),
+                                  const SizedBox(width: 8),
+                                  const Text(
+                                    'Me',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontFamily: 'Aeon',
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 12),
+                              Align(
+                                alignment: Alignment.centerRight,
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    ElevatedButton(
+                                      onPressed: () async {
+                                        setState(() {
+                                          // Toggle the selected item state
+                                          selectedItem[index] = !isSelectedData!;
+
+                                          isSelectedData = !isSelectedData!;
+                                          _foundWorkOrder[index].isFavouriteWo = !_foundWorkOrder[index].isFavouriteWo!;
+                                        });
+
+                                        // Determine if any item is selected
+                                        isSelectItem = selectedItem.containsValue(true);
+
+
+                                        print("isSelectItem${_foundWorkOrder[index].isFavouriteWo!}");
+
+                                        try {
+                                          // Call the API to save the work order status update
+                                          await WorkOrderStatusUpdateApi.saveWorkOrder(
+                                            workOrder.id!,
+                                            _foundWorkOrder[index].isFavouriteWo!,  // Pass the toggled state
+                                            workOrder.assetId!,
+                                          );
+
+                                          // After successful API call, update the state to reflect the change
+                                        } catch (error) {
+                                          // Handle API errors here
+                                          print('Error saving work order status: $error');
+                                        }
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.white,
+                                        padding: const EdgeInsets.all(12), // Background color
+                                      ),
+                                      child: Icon(
+                                        size: isSelectedData! ? 21 : 18,
+                                        isSelectedData! ? Icons.bookmark_added : Icons.bookmark_add,
+                                        color: isSelectedData! ? Colors.green : Colors.grey.shade400,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 8),
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        // Navigator.push(
+                                        //   context,
+                                        //   MaterialPageRoute(
+                                        //     builder: (context) =>
+                                        //         WorkorderDetailsPage(
+                                        //             workOrder: state
+                                        //                 .workOrders![
+                                        //             index]),
+                                        //   ),
+                                        // );
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        shape: const CircleBorder(),
+                                        backgroundColor: Colors.white,
+                                        padding: const EdgeInsets.all(
+                                            12), // Background color
+                                      ),
+                                      child: const Icon(
+                                          Icons.more_vert,
+                                          color: Colors.black),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+
+                    );
+                  },
+                  // The separators
+                  separatorBuilder: (context, index) {
+                    return Divider(
+                      thickness: 3,
+                      color: Colors.grey.shade300,
+                    );
+                  }),
+            )
+                : const Center(
+              child: Text("No WorkOrders Available"),
+            )
+          ],
+        ),
       ),
     );
   }
@@ -797,7 +523,7 @@ class _DashboardWorkOrdersPageState extends State<WorkOrderPage> {
 /* ------------------ SORT BY SECTION ------------------ */
 
 class SortBySection extends StatelessWidget {
-  final List<WorkorderEntity> workOrders;
+  final List<Result> workOrders;
 
   const SortBySection({
     super.key,
@@ -1114,7 +840,7 @@ class _StreamBuilderWidgetState extends State<StreamBuilderWidget> {
         stream: _bloc.stream,
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (snapshot.hasData) {
-            List<WorkOrder> workOrders = snapshot.data;
+            List<Result> workOrders = snapshot.data;
             return Text("${workOrders[0].assetName}");
           } else {
             return const CircularProgressIndicator();

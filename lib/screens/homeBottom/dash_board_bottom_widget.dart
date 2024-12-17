@@ -1,177 +1,210 @@
-import 'package:dms_dealers/screens/homeBottom/workorder_update_api.dart';
+import 'package:dms_dealers/screens/drawer/WorkOrderPage/work_order_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../utils/extensions/constants.dart';
-import '../drawer/WorkOrderPage/work_order_page.dart';
+import '../../base/base_state.dart';
+import '../../utils/contants.dart';
+import '../drawer/drawer_bloc.dart';
+import '../drawer/drawer_event.dart';
+import '../drawer/model/favoriteWorkOrder.dart';
+import '../drawer/model/workorder.dart';
 import '../woroOrder/model/workorder.dart';
-
-
-/////////////////////////////////////////////////////////////
-/// DASHBOARD BOTTOM WIDGET
-/////////////////////////////////////////////////////////////
 
 /// Displays List view of work orders counts by status
 class DashBoardBottomWidget extends StatefulWidget {
-  const DashBoardBottomWidget({
-    super.key,
-  });
+  const DashBoardBottomWidget({super.key});
 
   @override
   State<DashBoardBottomWidget> createState() => _DashBoardBottomWidgetState();
 }
 
 class _DashBoardBottomWidgetState extends State<DashBoardBottomWidget> {
-
   List<dynamic> favoriteWorkOrders = [];
   bool isLoading = false;
   String errorMessage = '';
+  late DrawerBloc bloc;
 
   @override
   void initState() {
     super.initState();
-    _fetchFavoriteWorkOrders();
+    bloc = BlocProvider.of<DrawerBloc>(context);
+    bloc.add(GetWorkOrderEvent(context: context));
+    bloc.add(GetFavoriteEvent(context: context));
   }
 
-  Future<void> _fetchFavoriteWorkOrders() async {
-    setState(() {
-      isLoading = true;
-    });
-    try {
-      final favoriteWorkOrderss = await WorkOrderStatusUpdateApi.getFavorite();
+  Map<String, int?> statusMap = {
+    "All Pending": 0,
+    "Open": 0,
+    "In Progress": 0,
+    "Stop": 0,
+    "Past Due": 0,
+    "Due Today": 0,
+    "Completed": 0
+  };
 
-      print("favoriteWorkOrders${favoriteWorkOrders}");
-      // Assuming the message contains the list of favorite work orders
-      setState(() {
-        favoriteWorkOrders = favoriteWorkOrderss ?? [];
-        isLoading = false;
-      });
-    } catch (error) {
-      setState(() {
-        errorMessage = error.toString();
-        isLoading = false;
-      });
-    }
-  }
-/////////////////////////// BUILD METHOD \\\\\\\\\\\\\\\\\\\\\\\\\\
+  Map<int, List<Result>?> newStatusMap = {
+    0: [],
+    1: [],
+    2: [],
+    3: [],
+    4: [],
+    5: [],
+    6: [],
+  };
+
+  late List<Color> colors = [
+    Colors.red,
+    Colors.orange,
+    Colors.blue,
+    Colors.purple,
+    Colors.yellow,
+    Colors.teal,
+    Colors.green,
+  ];
+
+  late List<IconData?> icons = [
+    Icons.pending_actions,
+    Icons.task_alt,
+    Icons.play_arrow,
+    Icons.pause,
+    Icons.access_time,
+    Icons.today,
+    Icons.done,
+  ];
+
   @override
   Widget build(BuildContext context) {
-    // Used to Display status counts.
-    /// STATUS MAP: All WorkOrder Statuses with 0 initial count value.
-    Map<String, int?> statusMap = {
-      "All Pending": 0,
-      "Open": 0,
-      "In Progress": 0,
-      "Stop": 0,
-      "Past Due": 0,
-      "Due Today": 0,
-      "Completed": 0
-    };
-    //  Used for filtering work orders by status
-    Map<int, List<WorkorderEntity>?> newStatusMap = {
-      0: [],
-      1: [],
-      2: [],
-      3: [],
-      4: [],
-      5: [],
-      6: [],
-    };
-
-    /// TITLES :
+    List<int?> counts = statusMap.values.toList();
     var titles = statusMap.entries.toList();
-    bool refresh = false;
 
-    return Expanded(
-      child: RefreshIndicator(
-        // onRefresh: () async {
-        //   await _bloc.fetchServiceRequest();
-        // },
-        onRefresh: () async {},
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 10.0,
-              ),
-              child: Card(
-                elevation: 0,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                  side: const BorderSide(
-                    color: Colors.black26,
-                  ),
-                ),
-                borderOnForeground: false,
-                child: ListTile(
-                  minLeadingWidth: 5,
-                  leading: Container(
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: Colors.red),
-                    height: 30,
-                    width: 5,
-                  ),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        favoriteWorkOrders.length.toString(),
-                        style: const TextStyle(fontSize: 14),
+    return BlocListener<DrawerBloc, BaseState>(
+      bloc: bloc,
+      listener: (context, state) {
+        if (state is SuccessState) {
+          if (state.successResponse is WorkOrder) {
+            final WorkOrder response = state.successResponse;
+
+            if (response.statusCode == Constants.successCode) {
+              setState(() {
+                var results = response.result?.toList() ?? [];
+
+                var newItems = results.where((e) => e.status.name == "NEW").toList();
+                var allPending = results.where((e) => e.status.name != "COMP").toList();
+                var inProgressItems = results.where((e) => e.status.name == "INPRG").toList();
+                var stopItems = results.where((e) => e.status.name == "STP").toList();
+                var completedItems = results.where((e) => e.status.name == "COMP").toList();
+
+                newStatusMap[0] = allPending;
+                statusMap["All Pending"] = allPending.length;
+
+                newStatusMap[1] = newItems;
+                statusMap["Open"] = newItems.length;
+
+                newStatusMap[2] = inProgressItems;
+                statusMap["In Progress"] = inProgressItems.length;
+
+                newStatusMap[3] = stopItems;
+                statusMap["Stop"] = stopItems.length;
+
+                newStatusMap[6] = completedItems;
+                statusMap["Completed"] = completedItems.length;
+
+                counts = statusMap.values.toList();
+                titles = statusMap.entries.toList();
+              });
+            }
+          } else if(state.successResponse is FavoriteWorkOrder){
+            final FavoriteWorkOrder response = state.successResponse;
+            if (response.statusCode == Constants.successCode) {
+              setState(() {
+                favoriteWorkOrders = response.result?.toList() ?? [];
+              });
+
+            }
+          }
+        }
+      },
+      child: BlocBuilder<DrawerBloc, BaseState>(
+        bloc: bloc,
+        builder: (context, state) {
+          return Expanded(
+            child: RefreshIndicator(
+              onRefresh: () async {},
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                    child: Card(
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                        side: const BorderSide(color: Colors.black26),
                       ),
-                      const SizedBox(
-                        width: 10,
+                      child: ListTile(
+                        minLeadingWidth: 5,
+                        leading: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: Colors.red,
+                          ),
+                          height: 30,
+                          width: 5,
+                        ),
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              favoriteWorkOrders.length.toString(),
+                              style: const TextStyle(fontSize: 14),
+                            ),
+                            const SizedBox(width: 10),
+                            const Icon(Icons.arrow_forward_ios_rounded, size: 20),
+                          ],
+                        ),
+                        title: const Text("Saved"),
+                        onTap: () {},
                       ),
-                      const Icon(
-                        Icons.arrow_forward_ios_rounded,
-                        size: 20,
-                      ),
-                    ],
+                    ),
                   ),
-                  title: const Text("Saved"),
-                  onTap: () {
-                    // Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    //   return DashboardFavWorkOrdersPage(
-                    //       workOrders: favoriteWorkOrders ?? [],
-                    //       title: "Favourite WorkOrders"
-                    //   ); }));
-                  },
-                ),
+                  const Divider(),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: GridView.builder(
+                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          mainAxisSpacing: 16,
+                          crossAxisSpacing: 16,
+                        ),
+                        itemCount: titles.length,
+                        itemBuilder: (context, index) {
+                          return InkWell(
+                            onTap: () {
+                              Navigator.push(context,
+                                  MaterialPageRoute(builder: (context) {
+                                    return WorkOrderPage(
+                                        workOrders: newStatusMap[index] ?? [],
+                                        title: titles[index].key,
+                                        color: colors[index]);
+                                  }));
+
+                            },
+                            child: ProjectCard(
+                              title: titles[index].key,
+                              count: counts[index]?.toString() ?? "0",
+                              color: colors[index],
+                              icon: icons[index],
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
-            const Divider(),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: GridView.builder(
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2, // number of items in each row
-                    mainAxisSpacing: 16, // spacing between rows
-                    crossAxisSpacing: 16, // spacing between columns
-                  ),
-                  padding: const EdgeInsets.all(8.0), // padding around the grid
-                  itemCount: titles.length, // total number of items
-                  itemBuilder: (BuildContext context, int index) {
-                    List<int?> counts = statusMap.values.toList();
-                    return InkWell(
-                      onTap: () {
-                        WorkOrderPage(
-                            workOrders: newStatusMap[index] ?? [],
-                            title: titles[index].key,
-                            color: colors[index]);
-                      },
-                      child: ProjectCard(
-                        title: titles[index].key,
-                        count: counts[index].toString(),
-                        color: colors[index],
-                        icon: icons[index],
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
@@ -183,12 +216,13 @@ class ProjectCard extends StatelessWidget {
   final Color color;
   final IconData? icon;
 
-  const ProjectCard(
-      {super.key,
-        required this.title,
-        required this.count,
-        required this.color,
-        this.icon});
+  const ProjectCard({
+    super.key,
+    required this.title,
+    required this.count,
+    required this.color,
+    this.icon,
+  });
 
   @override
   Widget build(BuildContext context) {

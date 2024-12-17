@@ -102,19 +102,4 @@ class StringConstants {
       "Please make sure you enter the correct email.";
 }
 
-class Constants {
-  static Future<bool> saveBaseURL(value) async {
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    print("Check thisssss" + value);
-    sharedPreferences.setString('eamAPIBaseURL', value);
 
-    return await sharedPreferences.setString("eamAPIBaseURL", value);
-  }
-
-// Read Data
-  static Future getBaseURL() async {
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    print("get thisssss" + sharedPreferences.getString("eamAPIBaseURL")!);
-    return await sharedPreferences.getString('eamAPIBaseURL') ?? '';
-  }
-}

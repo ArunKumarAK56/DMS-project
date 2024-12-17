@@ -1,4 +1,4 @@
-import 'package:dms_dealers/screens/drawer/drawer.dart';
+import 'package:dms_dealers/screens/drawer/drawer_screen.dart';
 import 'package:dms_dealers/screens/drawer/drawer_bloc.dart';
 import 'package:dms_dealers/screens/drawer/drawer_event.dart';
 import 'package:dms_dealers/screens/homeScreen/home_bloc.dart';

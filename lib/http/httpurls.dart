@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../screens/drawer/drawer.dart';
+import '../screens/drawer/drawer_screen.dart';
 import '../screens/drawer/drawer_bloc.dart';
 import '../screens/drawer/drawer_event.dart';
 import '../screens/morePage/more_page_screen.dart';
@@ -16,10 +16,10 @@ import '../screens/woroOrder/work_order.dart';
 class HttpUrl {
   //api.dealerpro.in
   static const String baseUrl = 'https://demoapi.orienseam.com/';
-  static const String generateOtp = '${baseUrl}api/generate-otp';
-  static const String verifyOtp = '${baseUrl}api/verify-otp';
   static const String loginUrl = '${baseUrl}api/users/signin';
   static const String forgotPassword = '${baseUrl}api/users/forgotpassword';
+  static const String workOrder = '${baseUrl}api/workorder/getall';
+  static const String getFavorite = '${baseUrl}api/workorder/getwolistbyisfavourite';
   static const String getVehicle = '${baseUrl}api/mobile/invoice/';
   static const String getVehicleDetails = '${baseUrl}api/mobile/vehicle/';
   static const String getWarranty = '${baseUrl}api/mobile/warranty/';

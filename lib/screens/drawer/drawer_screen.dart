@@ -42,15 +42,15 @@ class _DashBoardPageState extends State<DashBoardPage> {
     return Scaffold(
       backgroundColor: Colors.grey.shade200,
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(80),
+        preferredSize: const Size.fromHeight(100),
         child: Padding(
-          padding: EdgeInsets.only(top: 25),
+          padding: EdgeInsets.only(top: 40),
           child: OAppBar(
             titleCenter: false,
             icon: Icons.settings_outlined,
             qrIcon: Icons.qr_code_scanner_outlined,
             notificationIcon: Icons.notifications_none_sharp,
-            title: 'Iron Man',
+            title: 'Dash Board',
             onPress: () {
               Navigator.push(
                 context,
@@ -88,30 +88,15 @@ class _DashBoardPageState extends State<DashBoardPage> {
       // bottomNavigationBar: const BottomNavigationWidget(),
       body: Column(
         children: [
-          dashboardHeader(context),
+          SizedBox(
+              height: 20
+          ),
           DashBoardBottomWidget()
         ],
       ),
     );
   }
 
-  Widget dashboardHeader(BuildContext context) {
-    return SizedBox(
-      height: 50,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
-            child: Text(
-             "Dash board",
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 
   Future<dynamic> buildShowCupertinoModalPopup(BuildContext context) {
     return showCupertinoModalPopup(

@@ -25,16 +25,16 @@ class OTPBloc extends Bloc<OTPEvent, BaseState> {
       dynamic response;
       yield LoadingState();
       print(event.arguments);
-      final dynamic returnableValues = await APIRepository().dynamicRequest(
-          HttpUrl.verifyOtp,
-          userArguments: jsonEncode(event.arguments),
-          method: ApiRequestMethod.post,
-          isBearerTokenNeed: false,
-          context: event.context);
+      // final dynamic returnableValues = await APIRepository().dynamicRequest(
+      //     HttpUrl.verifyOtp,
+      //     userArguments: jsonEncode(event.arguments),
+      //     method: ApiRequestMethod.post,
+      //     isBearerTokenNeed: false,
+      //     context: event.context);
 
-      response = OtpVerify.fromJson(returnableValues);
+      // response = OtpVerify.fromJson(returnableValues);
 
-      yield SuccessState(successResponse: response);
+      // yield SuccessState(successResponse: response);
     }
   }
 }
